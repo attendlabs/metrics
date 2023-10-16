@@ -10,9 +10,7 @@ import { db } from '@/lib/db';
 const CoursesPage = async () => {
     const { userId } = auth();
 
-    if (!userId) {
-        return redirect("/");
-    }
+
 
     const courses = await db.course.findMany({
         where: {

@@ -8,7 +8,7 @@ import { CompanyNameForm } from './_components/CompanyNameForm';
 import { CompanyEmailForm } from './_components/CompanyEmailForm';
 import { ImageForm } from './_components/ImageForm';
 import { PriceForm } from './_components/PriceForm';
-import { CategoryForm } from './_components/CategoryForm';
+import { InitialSubscriptionDateForm } from './_components/InitialSubscriptionDateForm';
 import { AttachmentForm } from './_components/AttachmentForm';
 import { ChaptersForm } from './_components/ChaptersForm';
 import { Banner } from '@/components/Banner';
@@ -98,6 +98,11 @@ const CompanyIdPage = async ({
                             companyId={company.id}
                         />
                         <PhoneForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+
+                        <InitialSubscriptionDateForm
                             initialData={company}
                             companyId={company.id}
                         />
