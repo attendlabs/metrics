@@ -9,12 +9,12 @@ import { ChapterDescriptionForm } from "./_components/ChapterDescriptionForm";
 import { ChapterAccessForm } from "./_components/ChapterAccessForm";
 import { ChapterVideoForm } from "./_components/ChapterVideoForm";
 import { Banner } from "@/components/Banner";
-import { ChapterActions } from "./_components/ChapterActions";
+
 
 const ChapterIdPage = async ({
     params
 }: {
-    params: { courseId: string; chapterId: string }
+    params: { companyId: string; historyId: string }
 }) => {
     const { userId } = auth();
 
@@ -22,36 +22,23 @@ const ChapterIdPage = async ({
         return redirect("/");
     }
 
-    const chapter = await db.chapter.findUnique({
+    const history = await db.history.findUnique({
         where: {
-            id: params.chapterId,
-            courseId: params.courseId
-        },
-        include: {
-            muxData: true,
-        },
+            id: params.historyId,
+            companyId: params.companyId
+        }
     });
 
-    if (!chapter) {
+    if (!history) {
         return redirect("/");
     }
 
-    const requiredFields = [
-        chapter.title,
-        chapter.description,
-        chapter.videoUrl,
-    ];
 
-    const totalFields = requiredFields.length;
-    const completedFields = requiredFields.filter(Boolean).length;
 
-    const completionText = `(${completedFields}/${totalFields})`;
-
-    const isComplete = requiredFields.every(Boolean);
 
     return (
         <>
-            {!chapter.isPublished && (
+            {!history.isPublished && (
                 <Banner
                     variant="warning"
                     label="This chapter is unpublished. This will not be seen in the course"
@@ -61,7 +48,7 @@ const ChapterIdPage = async ({
                 <div className="flex items-center justify-between">
                     <div className="w-full">
                         <Link
-                            href={`/teacher/courses/${params.courseId}`}
+                            href={`/admin/companies/${params.companyId}`}
                             className="flex items-center text-sm hover:opacity-75 transition mb-6"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -73,14 +60,13 @@ const ChapterIdPage = async ({
                                     Chapter Creation
                                 </h1>
                                 <span className="text-sm text-slate-700">
-                                    Complete all fields {completionText}
+                                    Complete all fields
                                 </span>
                             </div>
                             <ChapterActions
-                                disabled={!isComplete}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
-                                isPublished={chapter.isPublished}
+                                companyId={params.companyId}
+                                historyId={params.historyId}
+                                isPublished={history.isPublished}
                             />
                         </div>
                     </div>
@@ -94,16 +80,16 @@ const ChapterIdPage = async ({
                                     Costumize your chapter
                                 </h2>
                             </div>
-                            <ChapterTitleForm
+                            {/* <ChapterTitleForm
                                 initialData={chapter}
                                 courseId={params.courseId}
                                 chapterId={params.chapterId}
-                            />
-                            <ChapterDescriptionForm
+                            /> */}
+                            {/* <ChapterDescriptionForm
                                 initialData={chapter}
                                 courseId={params.courseId}
                                 chapterId={params.chapterId}
-                            />
+                            /> */}
                         </div>
                         <div>
                             <div className="flex items-center gap-x-2">
@@ -112,11 +98,11 @@ const ChapterIdPage = async ({
                                     Access settings
                                 </h2>
                             </div>
-                            <ChapterAccessForm
+                            {/* <ChapterAccessForm
                                 initialData={chapter}
                                 courseId={params.courseId}
                                 chapterId={params.chapterId}
-                            />
+                            /> */}
                         </div>
                     </div>
                     <div>
@@ -126,11 +112,6 @@ const ChapterIdPage = async ({
                                 Add a video.
                             </h2>
                         </div>
-                        <ChapterVideoForm
-                            courseId={params.courseId}
-                            chapterId={params.chapterId}
-                            initialData={chapter}
-                        />
                     </div>
                 </div>
             </div>

@@ -29,21 +29,21 @@ import { Calendar } from '@/components/ui/calendar';
 import { ptBR } from 'date-fns/locale';
 
 
-interface InitialSubscriptionDateFormProps {
+interface EndSubscriptionDateFormProps {
     initialData: Company;
     companyId: string;
 };
 
 const formSchema = z.object({
-    subscriptionDate: z.date({
+    subscriptionEnd: z.date({
         required_error: "Selecione uma data de início.",
     }),
 });
 
-export const InitialSubscriptionDateForm = ({
+export const EndSubscriptionDateForm = ({
     initialData,
     companyId,
-}: InitialSubscriptionDateFormProps) => {
+}: EndSubscriptionDateFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -72,7 +72,7 @@ export const InitialSubscriptionDateForm = ({
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
-                Início da assinatura
+                Fim da assinatura
                 <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing
                         ? (
@@ -90,9 +90,9 @@ export const InitialSubscriptionDateForm = ({
                     <div className='flex items-center gap-x-2'>
                         <p className={cn(
                             "text-sm font-medium text-slate-700",
-                            !initialData.subscriptionDate && "text-slate-500 italic"
+                            !initialData.subscriptionEnd && "text-slate-500 font-normal italic"
                         )}>
-                            {initialData.subscriptionDate?.toLocaleDateString() || "Insira uma data"}
+                            {initialData.subscriptionEnd?.toLocaleDateString() || "Insira uma data"}
                         </p>
                     </div>
                 </>
@@ -105,7 +105,7 @@ export const InitialSubscriptionDateForm = ({
                     >
                         <FormField
                             control={form.control}
-                            name='subscriptionDate'
+                            name='subscriptionEnd'
                             render={({ field }) => (
                                 <FormItem className='flex flex-col'>
                                     <Popover>
@@ -132,7 +132,7 @@ export const InitialSubscriptionDateForm = ({
                                                 mode='single'
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                                                disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
                                                 initialFocus
                                             />
                                         </PopoverContent>

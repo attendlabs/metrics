@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Attachment, Course } from '@prisma/client';
+import { Attachment, Company, Course, History } from '@prisma/client';
 
 
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import { FileUpload } from '@/components/FileUpload';
 
 
 interface AttachmentFormProps {
-    initialData: Course & { attachments: Attachment[] };
+    initialData: Company & { histories: History[] };
     courseId: string;
 };
 
@@ -63,37 +63,37 @@ export const AttachmentForm = ({
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
-                Course attachments
+                Observações
                 <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing && (
-                        <>Cancel</>
+                        <>Cancelar</>
                     )}
 
                     {!isEditing && (
                         <>
                             <PlusCircle className='h-4 w-4 mr-2' />
-                            Add a file
+                            Adicionar
                         </>
                     )}
                 </Button>
             </div>
             {!isEditing && (
                 <>
-                    {initialData.attachments.length === 0 && (
+                    {initialData.histories?.length === 0 && (
                         <p className='text-sm mt-2 text-slate-500 italic'>
-                            No attachments yet
+                            Sem histórico salvo
                         </p>
                     )}
-                    {initialData.attachments.length > 0 && (
+                    {initialData.histories?.length > 0 && (
                         <div className='space-y-2'>
-                            {initialData.attachments.map((attachment) => (
+                            {initialData.histories.map((attachment) => (
                                 <div
                                     key={attachment.id}
                                     className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                                 >
                                     <File className='h-4 w-4 mr-2 flex-shrink-0' />
                                     <p className='text-xs line-clamp-1'>
-                                        {attachment.name}
+                                        {attachment.observation}
                                     </p>
                                     {deletingId === attachment.id && (
                                         <div className='ml-auto'>

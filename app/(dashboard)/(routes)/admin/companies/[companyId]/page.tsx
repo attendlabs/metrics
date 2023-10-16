@@ -10,10 +10,11 @@ import { ImageForm } from './_components/ImageForm';
 import { PriceForm } from './_components/PriceForm';
 import { InitialSubscriptionDateForm } from './_components/InitialSubscriptionDateForm';
 import { AttachmentForm } from './_components/AttachmentForm';
-import { ChaptersForm } from './_components/ChaptersForm';
 import { Banner } from '@/components/Banner';
 import { Actions } from './_components/Actions';
 import { PhoneForm } from './_components/PhoneForm';
+import { SignatureTypeForm } from './_components/SignatureTypeForm';
+import { EndSubscriptionDateForm } from './_components/EndSubscriptionDateForm';
 
 const CompanyIdPage = async ({
     params
@@ -32,11 +33,7 @@ const CompanyIdPage = async ({
         },
     });
 
-    // const categories = await db.category.findMany({
-    //     orderBy: {
-    //         name: "asc",
-    //     }
-    // })
+
 
     if (!company) {
         redirect("/");
@@ -102,24 +99,30 @@ const CompanyIdPage = async ({
                             companyId={company.id}
                         />
 
+                        <SignatureTypeForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+
                         <InitialSubscriptionDateForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+                        <EndSubscriptionDateForm
                             initialData={company}
                             companyId={company.id}
                         />
                     </div>
                     <div className='space-y-6'>
-                        {/* <div>
+                        <div>
                             <div className='flex items-center gap-x-2'>
                                 <IconBadge icon={ListChecks} />
                                 <h2 className='text-xl'>
-                                    Course chapters
+                                    Histórico
                                 </h2>
                             </div>
-                            <ChaptersForm
-                                initialData={course}
-                                courseId={course.id}
-                            />
-                        </div> */}
+
+                        </div>
                         <div>
                             <div className='flex items-center gap-x-2'>
                                 <IconBadge icon={CircleDollarSign} />
