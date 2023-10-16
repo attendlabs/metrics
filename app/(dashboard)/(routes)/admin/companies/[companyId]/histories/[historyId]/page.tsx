@@ -9,6 +9,7 @@ import { ChapterDescriptionForm } from "./_components/ChapterDescriptionForm";
 import { ChapterAccessForm } from "./_components/ChapterAccessForm";
 import { ChapterVideoForm } from "./_components/ChapterVideoForm";
 import { Banner } from "@/components/Banner";
+import { HistoryActions } from "./_components/HistoryActions";
 
 
 const ChapterIdPage = async ({
@@ -63,7 +64,7 @@ const ChapterIdPage = async ({
                                     Complete all fields
                                 </span>
                             </div>
-                            <ChapterActions
+                            <HistoryActions
                                 companyId={params.companyId}
                                 historyId={params.historyId}
                                 isPublished={history.isPublished}
