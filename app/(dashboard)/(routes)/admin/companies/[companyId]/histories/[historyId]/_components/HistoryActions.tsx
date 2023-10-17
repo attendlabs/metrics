@@ -12,14 +12,12 @@ interface HistoryActionsProps {
     disabled?: boolean;
     companyId: string;
     historyId: string;
-    isPublished: boolean;
 };
 
 export const HistoryActions = ({
     disabled,
     companyId,
     historyId,
-    isPublished
 }: HistoryActionsProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -27,15 +25,8 @@ export const HistoryActions = ({
     const onClick = async () => {
         try {
             setIsLoading(true);
-
-            if (isPublished) {
-                await axios.patch(`/api/companies/${companyId}/histories/${historyId}/unpublish`);
-                toast.success("Chapter unpublished");
-            } else {
-                await axios.patch(`/api/companies/${companyId}/histories/${historyId}/publish`);
-                toast.success("Chapter published");
-            }
-            router.refresh();
+            toast.success("Alterações salvas")
+            router.push(`/admin/companies/${companyId}`);
         } catch (error) {
             toast.error("Something went wrong");
         } finally {
@@ -49,11 +40,11 @@ export const HistoryActions = ({
 
             await axios.delete(`/api/companies/${companyId}/histories/${historyId}`);
 
-            toast.success("Chapter deleted");
+            toast.success("Histórico apagado.");
             router.refresh();
             router.push(`/admin/companies/${companyId}`);
         } catch (error) {
-            toast.error("Something went wrong");
+            toast.error("Algo errado aconteceu");
         } finally {
             setIsLoading(false);
         }
@@ -67,7 +58,7 @@ export const HistoryActions = ({
                 variant="outline"
                 size="sm"
             >
-                {isPublished ? "Unpublish" : "Publish"}
+                Salvar alterações
             </Button>
             <ConfirmModal onConfirm={onDelete}>
                 <Button size="sm">

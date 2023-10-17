@@ -18,27 +18,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pencil } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 
 //todo: translation on form message
 
-interface ChapterTitleFormProps {
+interface HistoryTitleFormProps {
     initialData: {
         title: string;
     };
-    courseId: string;
-    chapterId: string;
+    companyId: string;
+    historyId: string;
 };
 
 const formSchema = z.object({
     title: z.string().min(1)
 });
 
-export const ChapterTitleForm = ({
+export const HistoryTitleForm = ({
     initialData,
-    courseId,
-    chapterId
-}: ChapterTitleFormProps) => {
+    companyId,
+    historyId
+}: HistoryTitleFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -54,27 +55,27 @@ export const ChapterTitleForm = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
-            toast.success("Chapter updated");
+            await axios.patch(`/api/companies/${companyId}/histories/${historyId}`, values);
+            toast.success("Histórico alterado");
             toggleEdit();
             router.refresh();
         } catch (error) {
-            toast.error("Something went wrong");
+            toast.error("Aconteceu algo errado");
         }
     }
 
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
-                Chapter title
+                Observações
                 <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing
                         ? (
-                            <>Cancel</>)
+                            <>Cancelar</>)
                         : (
                             <>
                                 <Pencil className='h-4 w-4 mr-2' />
-                                Edit
+                                Editar
                             </>
                         )}
                 </Button>
@@ -96,7 +97,7 @@ export const ChapterTitleForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input
+                                        <Textarea
                                             disabled={isSubmitting}
                                             placeholder="e.g. 'Introduction to the course'"
                                             {...field}
@@ -111,7 +112,7 @@ export const ChapterTitleForm = ({
                                 disabled={!isValid || isSubmitting}
                                 type="submit"
                             >
-                                Save
+                                Salvar
                             </Button>
                         </div>
                     </form>

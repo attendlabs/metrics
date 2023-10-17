@@ -1,10 +1,10 @@
 import { IconBadge } from "@/components/IconBadge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
+import { ArrowLeft, Eye, LayoutDashboard, Video, File } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ChapterTitleForm } from "./_components/ChapterTitleForm";
+import { HistoryTitleForm } from "./_components/HistoryTitleForm";
 import { ChapterDescriptionForm } from "./_components/ChapterDescriptionForm";
 import { ChapterAccessForm } from "./_components/ChapterAccessForm";
 import { ChapterVideoForm } from "./_components/ChapterVideoForm";
@@ -38,85 +38,62 @@ const ChapterIdPage = async ({
 
 
     return (
-        <>
-            {!history.isPublished && (
-                <Banner
-                    variant="warning"
-                    label="This chapter is unpublished. This will not be seen in the course"
-                />
-            )}
-            <div className="p-6">
-                <div className="flex items-center justify-between">
-                    <div className="w-full">
-                        <Link
-                            href={`/admin/companies/${params.companyId}`}
-                            className="flex items-center text-sm hover:opacity-75 transition mb-6"
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to course setup
-                        </Link>
-                        <div className="flex items-center justify-between w-full">
-                            <div className="flex flex-col gap-y-2">
-                                <h1 className="text-2xl font-medium">
-                                    Chapter Creation
-                                </h1>
-                                <span className="text-sm text-slate-700">
-                                    Complete all fields
-                                </span>
-                            </div>
-                            <HistoryActions
-                                companyId={params.companyId}
-                                historyId={params.historyId}
-                                isPublished={history.isPublished}
-                            />
+
+        <div className="p-6">
+            <div className="flex items-center justify-between">
+                <div className="w-full">
+                    <Link
+                        href={`/admin/companies/${params.companyId}`}
+                        className="flex items-center text-sm hover:opacity-70 transition mb-6 max-w-[80px]"
+                    >
+                        <ArrowLeft className="h-4 w-4 mr-2" />
+                        Voltar
+                    </Link>
+                    <div className="flex items-center justify-between w-full">
+                        <div className="flex flex-col gap-y-2">
+                            <h1 className="text-2xl font-medium">
+                                Edição de histórico
+                            </h1>
+                            <span className="text-sm text-slate-700">
+                                Preencha os campos com atenção
+                            </span>
                         </div>
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-                    <div className="space-y-4">
-                        <div>
-                            <div className="flex items-center gap-x-2">
-                                <IconBadge icon={LayoutDashboard} />
-                                <h2 className="text-xl">
-                                    Costumize your chapter
-                                </h2>
-                            </div>
-                            {/* <ChapterTitleForm
-                                initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
-                            /> */}
-                            {/* <ChapterDescriptionForm
-                                initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
-                            /> */}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-x-2">
-                                <IconBadge icon={Eye} />
-                                <h2 className="text-xl">
-                                    Access settings
-                                </h2>
-                            </div>
-                            {/* <ChapterAccessForm
-                                initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
-                            /> */}
-                        </div>
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-x-2">
-                            <IconBadge icon={Video} />
-                            <h2 className="text-xl">
-                                Add a video.
-                            </h2>
-                        </div>
+                        <HistoryActions
+                            companyId={params.companyId}
+                            historyId={params.historyId}
+                        />
                     </div>
                 </div>
             </div>
-        </>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div className="space-y-4">
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={File} />
+                            <h2 className="text-xl">
+                                Edite sua descrição
+                            </h2>
+                        </div>
+                        <HistoryTitleForm
+                            initialData={history}
+                            companyId={params.companyId}
+                            historyId={params.historyId}
+                        />
+                        {/* <ChapterDescriptionForm
+                                initialData={chapter}
+                                courseId={params.courseId}
+                                chapterId={params.chapterId}
+                            /> */}
+                    </div>
+                    {/* Abaixo do primeiro */}
+                </div>
+                <div className="text-sm text-gray-400 italic">
+                    TO-DO: add file attachments, bigger description and other important infos
+                </div>
+                {/* direito do grid */}
+            </div>
+        </div>
+
     )
 };
 
