@@ -12,6 +12,7 @@ import { Actions } from './_components/Actions';
 import { PhoneForm } from './_components/PhoneForm';
 import { SignatureTypeForm } from './_components/SignatureTypeForm';
 import { EndSubscriptionDateForm } from './_components/EndSubscriptionDateForm';
+import { HistoryForm } from './_components/HistoryForm';
 
 const CompanyIdPage = async ({
     params
@@ -28,6 +29,13 @@ const CompanyIdPage = async ({
         where: {
             id: params.companyId
         },
+        include: {
+            histories: {
+                orderBy: {
+                    createdAt: "asc"
+                }
+            }
+        }
     });
 
 
@@ -66,7 +74,7 @@ const CompanyIdPage = async ({
                             Cadastro de empresa
                         </h1>
                         <span className='text-sm text-slate-00'>
-                            Preencha todos os requisitos.
+                            Preencha todos os dados necessários.
                         </span>
                     </div>
                     <Actions
@@ -118,7 +126,10 @@ const CompanyIdPage = async ({
                                     Histórico
                                 </h2>
                             </div>
-
+                            <HistoryForm
+                                initialData={company}
+                                companyId={company.id}
+                            />
                         </div>
                         <div>
                             <div className='flex items-center gap-x-2'>

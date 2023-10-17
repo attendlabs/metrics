@@ -138,8 +138,8 @@ enum PaymentMethod {
 
 model Company {
   id    String  @id @default(uuid())
-  name  String
-  email String?
+  name  String  @db.Text
+  email String? @db.Text
   phone String?
 
   histories History[]
@@ -162,12 +162,11 @@ model Company {
 }
 
 model History {
-  id          String  @id @default(uuid())
-  observation String
-  isPublished Boolean @default(false)
+  id    String @id @default(uuid())
+  title String
 
-  companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

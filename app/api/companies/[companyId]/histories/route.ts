@@ -8,22 +8,21 @@ export async function POST(
 ) {
     try {
         const { userId } = auth();
-        const { observation, company } = await req.json();
+        const { title } = await req.json();
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
 
-        const historyAdd = await db.history.create({
+        const history = await db.history.create({
             data: {
-                observation,
+                title,
                 companyId: params.companyId,
-                company
             }
         });
 
-        return NextResponse.json(historyAdd);
+        return NextResponse.json(history);
 
 
     } catch (error) {
