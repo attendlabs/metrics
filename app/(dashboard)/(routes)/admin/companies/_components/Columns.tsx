@@ -2,7 +2,7 @@
 
 import { Course } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, PlusCircleIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,6 +26,34 @@ export const columns: ColumnDef<Course>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Nome da Empresa
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
+    },
+    {
+        accessorKey: "documentNumber",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    CNPJ
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
+    },
+    {
+        accessorKey: "email",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    E-mail
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -102,8 +130,8 @@ export const columns: ColumnDef<Course>[] = [
                     <DropdownMenuContent align="end">
                         <Link href={`/admin/companies/${id}`}>
                             <DropdownMenuItem>
-                                <Pencil className="w-4 h-4 mr-2" />
-                                Editar
+                                <PlusCircleIcon className="w-4 h-4 mr-2" />
+                                Detalhes
                             </DropdownMenuItem>
                         </Link>
                     </DropdownMenuContent>

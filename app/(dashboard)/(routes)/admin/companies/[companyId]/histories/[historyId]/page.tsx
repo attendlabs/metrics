@@ -5,10 +5,6 @@ import { ArrowLeft, Eye, LayoutDashboard, Video, File } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { HistoryTitleForm } from "./_components/HistoryTitleForm";
-import { ChapterDescriptionForm } from "./_components/ChapterDescriptionForm";
-import { ChapterAccessForm } from "./_components/ChapterAccessForm";
-import { ChapterVideoForm } from "./_components/ChapterVideoForm";
-import { Banner } from "@/components/Banner";
 import { HistoryActions } from "./_components/HistoryActions";
 
 

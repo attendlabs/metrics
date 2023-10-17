@@ -5,6 +5,8 @@ import SidebarItem from './SidebarItem';
 import { Layout, Compass, List, BarChart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
+// TODO: verificar user + routes
+
 const guestRoutes = [
     {
         icon: Layout,
@@ -21,13 +23,13 @@ const guestRoutes = [
 const teacherRoutes = [
     {
         icon: List,
-        label: "Courses",
-        href: "/teacher/courses",
+        label: "Empresas",
+        href: "/admin/companies",
     },
     {
         icon: BarChart,
-        label: "Analytics",
-        href: "/teacher/analytics",
+        label: "Análises",
+        href: "/admin/analytics",
     }
 ]
 
@@ -36,7 +38,7 @@ const SidebarRoutes = () => {
 
     const isTeacherPage = pathname?.includes("/teacher");
 
-    const routes = isTeacherPage ? teacherRoutes : guestRoutes;
+    const routes = teacherRoutes;
     return (
         <div className='flex flex-col w-full'>
             {routes.map((route) => (

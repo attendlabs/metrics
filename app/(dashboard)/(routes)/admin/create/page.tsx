@@ -57,9 +57,6 @@ const CreatePage = () => {
                 <h1 className='text-2xl'>
                     Nome da empresa
                 </h1>
-                <p className='text-sm text-slate-600'>
-                    Não se preocupe, você pode alterar isso mais tarde.
-                </p>
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -81,7 +78,7 @@ const CreatePage = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Você pode usar também o nome fantasia.
+                                        Não se preocupe, você pode alterar isso mais tarde.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -93,14 +90,14 @@ const CreatePage = () => {
                                     variant="ghost"
                                     type='button'
                                 >
-                                    Cancel
+                                    Cancelar
                                 </Button>
                             </Link>
                             <Button
                                 type="submit"
                                 disabled={!isValid || isSubmitting}
                             >
-                                Continue
+                                Continuar
                             </Button>
                         </div>
                     </form>

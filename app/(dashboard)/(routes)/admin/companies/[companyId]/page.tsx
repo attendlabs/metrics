@@ -13,6 +13,8 @@ import { PhoneForm } from './_components/PhoneForm';
 import { SignatureTypeForm } from './_components/SignatureTypeForm';
 import { EndSubscriptionDateForm } from './_components/EndSubscriptionDateForm';
 import { HistoryForm } from './_components/HistoryForm';
+import { CompanyDocumentForm } from './_components/CompanyDocumentForm';
+
 
 const CompanyIdPage = async ({
     params
@@ -95,6 +97,11 @@ const CompanyIdPage = async ({
                             companyId={company.id}
                         />
 
+                        <CompanyDocumentForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+
                         <CompanyEmailForm
                             initialData={company}
                             companyId={company.id}
@@ -108,7 +115,7 @@ const CompanyIdPage = async ({
                             initialData={company}
                             companyId={company.id}
                         />
-
+                        {/* to-do: formatar datas para dd/mm/aaaa */}
                         <InitialSubscriptionDateForm
                             initialData={company}
                             companyId={company.id}
@@ -139,8 +146,8 @@ const CompanyIdPage = async ({
                                 </h2>
                             </div>
                             {/* <PriceForm
-                                initialData={course}
-                                courseId={course.id}
+                                initialData={company}
+                                companyId={company.id}
                             /> */}
                         </div>
                         {/* <div>
