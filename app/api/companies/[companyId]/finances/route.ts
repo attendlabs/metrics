@@ -8,7 +8,8 @@ export async function POST(
 ) {
     try {
         const { userId } = auth();
-        const { value } = await req.json();
+        const { value, paymentDate, discount, description } = await req.json();
+
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -18,6 +19,10 @@ export async function POST(
             data: {
                 value,
                 companyId: params.companyId,
+                paymentDate,
+                discount,
+                netValue: (value - discount),
+                description
             }
         })
 

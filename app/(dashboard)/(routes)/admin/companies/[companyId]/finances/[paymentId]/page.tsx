@@ -6,6 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { HistoryTitleForm } from "./_components/HistoryTitleForm";
 import { PaymentActions } from "./_components/PaymentActions";
+import { PaymentForm } from "../../_components/PaymentForm";
 
 
 const PaymentIdPage = async ({
@@ -64,18 +65,7 @@ const PaymentIdPage = async ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <div className="space-y-4">
                     <div>
-
                         Teste
-                        {/* <HistoryTitleForm
-                            initialData={history}
-                            companyId={params.companyId}
-                            historyId={params.historyId}
-                        /> */}
-                        {/* <ChapterDescriptionForm
-                                initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
-                            /> */}
                     </div>
                     {/* Abaixo do primeiro */}
                 </div>

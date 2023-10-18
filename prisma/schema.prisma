@@ -150,6 +150,8 @@ model Company {
   phone          String?
   documentNumber String?
 
+  idDB String?
+
   histories History[]
   finances  Payment[]
 
@@ -184,11 +186,12 @@ model History {
 }
 
 model Payment {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   value       Float
   discount    Float?
   netValue    Float?
-  description String? @db.Text
+  description String?  @db.Text
+  paymentDate DateTime
 
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String

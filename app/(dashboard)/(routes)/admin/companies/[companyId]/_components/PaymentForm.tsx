@@ -7,21 +7,26 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Company, Course, Payment } from '@prisma/client';
+import { Company, Payment } from '@prisma/client';
 
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Banknote, CircleDollarSignIcon, File, Loader2, Pencil, PlusCircleIcon, X } from 'lucide-react';
+import { Banknote, CalendarIcon, Loader2, Pencil, PlusCircleIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatPrice } from '@/lib/format';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { Textarea } from '@/components/ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from "date-fns";
+import { Calendar } from '@/components/ui/calendar';
 
 
 interface PaymentFormProps {
@@ -31,6 +36,12 @@ interface PaymentFormProps {
 
 const formSchema = z.object({
     value: z.coerce.number(),
+    discount: z.coerce.number().optional(),
+    netValue: z.coerce.number().optional(),
+    description: z.string().min(4, "Mínimo de 4 caracteres").optional(),
+    paymentDate: z.date({
+        required_error: "Selecione a data do pagamento.",
+    }),
 });
 
 export const PaymentForm = ({
@@ -50,6 +61,7 @@ export const PaymentForm = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             value: undefined,
+            paymentDate: new Date(),
         },
     });
 
@@ -80,7 +92,7 @@ export const PaymentForm = ({
         }
     }
 
-    console.log(initialData, "aqui")
+
 
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
@@ -90,7 +102,7 @@ export const PaymentForm = ({
                 </div>
             )}
             <div className='font-medium flex items-center justify-between'>
-                Últimos pagamentos
+                {isCreating ? "Novo pagamento" : "Últimos pagamentos"}
                 <Button variant="ghost" onClick={toggleCreating}>
                     {isCreating
                         ? (<>Cancelar</>)
@@ -111,10 +123,108 @@ export const PaymentForm = ({
                             name='value'
                             render={({ field }) => (
                                 <FormItem>
+                                    <FormLabel>
+                                        Valor bruto
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isSubmitting}
                                             placeholder='2000,00'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='discount'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Desconto
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder='120,00'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='netValue'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Valor líquido
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder='1880,00'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='paymentDate'
+                            render={({ field }) => (
+                                <FormItem className='flex flex-col'>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-[240px] pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value ? (
+                                                        format(field.value, "PP")
+                                                    ) : (
+                                                        <span>Escolha uma data</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className='w-auto p-0' align='start'>
+                                            <Calendar
+                                                mode='single'
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='description'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Descrição
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            disabled={isSubmitting}
+                                            placeholder='Escreva suas observações'
                                             {...field}
                                         />
                                     </FormControl>
@@ -146,7 +256,7 @@ export const PaymentForm = ({
                                 <Banknote className='h-4 w-4 mr-2 flex-shrink-0' />
                                 {/* TODO:alterar data para a data do pagamento ao invés da data de criação */}
                                 <p className='text-xs font-medium line-clamp-1'>
-                                    {payment.createdAt.toLocaleDateString()} - Valor: R${payment.value}
+                                    {payment.paymentDate?.toLocaleDateString() || "Sem data"} - Valor: R${payment.value}
                                 </p>
                                 <div className='flex ml-auto'>
                                     <button

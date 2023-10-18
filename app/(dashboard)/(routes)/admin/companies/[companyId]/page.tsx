@@ -15,6 +15,7 @@ import { EndSubscriptionDateForm } from './_components/EndSubscriptionDateForm';
 import { HistoryForm } from './_components/HistoryForm';
 import { CompanyDocumentForm } from './_components/CompanyDocumentForm';
 import { PaymentForm } from './_components/PaymentForm';
+import { DatabaseIdForm } from './_components/DatabaseIdForm';
 
 
 const CompanyIdPage = async ({
@@ -139,6 +140,10 @@ const CompanyIdPage = async ({
                                     Histórico
                                 </h2>
                             </div>
+                            <DatabaseIdForm
+                                initialData={company}
+                                companyId={company.id}
+                            />
                             <HistoryForm
                                 initialData={company}
                                 companyId={company.id}
