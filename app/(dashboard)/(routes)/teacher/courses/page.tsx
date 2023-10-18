@@ -8,13 +8,15 @@ import { db } from '@/lib/db';
 
 
 const CoursesPage = async () => {
-    const { userId } = auth();
+    const { userId } = auth() || null;
 
-
+    if (!userId) {
+        return redirect("/");
+    }
 
     const courses = await db.course.findMany({
         where: {
-            userId,
+            userId
         },
         orderBy: {
             createdAt: "desc",
