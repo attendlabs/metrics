@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Chapter } from '@prisma/client';
 
 import {
     Form,
@@ -18,28 +19,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pencil } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { Editor } from '@/components/Editor';
+import { Preview } from '@/components/Preview';
 
 
 //todo: translation on form message
 
-interface HistoryTitleFormProps {
-    initialData: {
-        title: string;
-    };
-    companyId: string;
-    historyId: string;
+interface ChapterDescriptionFormProps {
+    initialData: Chapter;
+    courseId: string
+    chapterId: string;
 };
 
 const formSchema = z.object({
-    title: z.string().min(1)
+    description: z.string().min(1),
 });
 
-export const HistoryTitleForm = ({
+export const ChapterDescriptionForm = ({
     initialData,
-    companyId,
-    historyId
-}: HistoryTitleFormProps) => {
+    courseId,
+    chapterId
+}: ChapterDescriptionFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -48,42 +49,52 @@ export const HistoryTitleForm = ({
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            description: initialData?.description || ""
+        },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`/api/companies/${companyId}/histories/${historyId}`, values);
-            toast.success("Histórico alterado");
+            await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
+            toast.success("Chapter updated");
             toggleEdit();
             router.refresh();
         } catch (error) {
-            toast.error("Aconteceu algo errado");
+            toast.error("Something went wrong");
         }
     }
 
     return (
-        <div className='border bg-slate-100 rounded-md p-4'>
+        <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
-                Observações
+                Chapter description
                 <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing
                         ? (
-                            <>Cancelar</>)
+                            <>Cancel</>)
                         : (
                             <>
                                 <Pencil className='h-4 w-4 mr-2' />
-                                Editar
+                                Edit
                             </>
                         )}
                 </Button>
             </div>
             {!isEditing && (
-                <p className='text-sm mt-2'>
-                    {initialData.title}
-                </p>
+                <div className={cn(
+                    "text-sm mt-2",
+                    !initialData.description && "text-slate-500 italic"
+                )}>
+                    {!initialData.description && "No description"}
+                    {initialData.description && (
+                        <Preview
+                            value={initialData.description}
+                        />
+                    )}
+                </div>
             )}
             {isEditing && (
                 <Form {...form}>
@@ -93,13 +104,11 @@ export const HistoryTitleForm = ({
                     >
                         <FormField
                             control={form.control}
-                            name='title'
+                            name='description'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Textarea
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'Introduction to the course'"
+                                        <Editor
                                             {...field}
                                         />
                                     </FormControl>
@@ -112,7 +121,7 @@ export const HistoryTitleForm = ({
                                 disabled={!isValid || isSubmitting}
                                 type="submit"
                             >
-                                Salvar
+                                Save
                             </Button>
                         </div>
                     </form>

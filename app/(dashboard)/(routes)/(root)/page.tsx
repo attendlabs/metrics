@@ -12,6 +12,10 @@ export default async function Dashboard() {
   if (!userId) {
     return redirect("/sign-in");
   }
+  // todo: retirar isso e alterar rotas corretamente
+  if (userId) {
+    return redirect("/admin/companies")
+  }
 
   const {
     completedCourses,

@@ -5,13 +5,13 @@ import { ArrowLeft, Eye, LayoutDashboard, Video, File } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { HistoryTitleForm } from "./_components/HistoryTitleForm";
-import { HistoryActions } from "./_components/HistoryActions";
+import { HistoryActions, PaymentActions } from "./_components/HistoryActions";
 
 
-const CompanyIdPage = async ({
+const PaymentIdPage = async ({
     params
 }: {
-    params: { companyId: string; historyId: string }
+    params: { companyId: string; paymentId: string }
 }) => {
     const { userId } = auth();
 
@@ -19,14 +19,14 @@ const CompanyIdPage = async ({
         return redirect("/");
     }
 
-    const history = await db.history.findUnique({
+    const payment = await db.payment.findUnique({
         where: {
-            id: params.historyId,
+            id: params.paymentId,
             companyId: params.companyId
         }
     });
 
-    if (!history) {
+    if (!payment) {
         return redirect("/");
     }
 
@@ -48,15 +48,15 @@ const CompanyIdPage = async ({
                     <div className="flex items-center justify-between w-full">
                         <div className="flex flex-col gap-y-2">
                             <h1 className="text-2xl font-medium">
-                                Edição de histórico
+                                Edição de pagamento
                             </h1>
                             <span className="text-sm text-slate-700">
                                 Preencha os campos com atenção
                             </span>
                         </div>
-                        <HistoryActions
+                        <PaymentActions
                             companyId={params.companyId}
-                            historyId={params.historyId}
+                            paymentId={params.paymentId}
                         />
                     </div>
                 </div>
@@ -64,21 +64,23 @@ const CompanyIdPage = async ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <div className="space-y-4">
                     <div>
-                        <HistoryTitleForm
+
+                        Teste
+                        {/* <HistoryTitleForm
                             initialData={history}
                             companyId={params.companyId}
                             historyId={params.historyId}
-                        />
+                        /> */}
                         {/* <ChapterDescriptionForm
                                 initialData={chapter}
                                 courseId={params.courseId}
-                                CompanyId={params.CompanyId}
+                                chapterId={params.chapterId}
                             /> */}
                     </div>
                     {/* Abaixo do primeiro */}
                 </div>
                 <div className="text-sm text-gray-400 italic">
-                    TO-DO: add file attachments, bigger description and other important infos
+                    Teste
                 </div>
                 {/* direito do grid */}
             </div>
@@ -87,4 +89,4 @@ const CompanyIdPage = async ({
     )
 };
 
-export default CompanyIdPage;
+export default PaymentIdPage;

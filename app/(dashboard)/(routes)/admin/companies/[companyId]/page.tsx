@@ -14,6 +14,7 @@ import { SignatureTypeForm } from './_components/SignatureTypeForm';
 import { EndSubscriptionDateForm } from './_components/EndSubscriptionDateForm';
 import { HistoryForm } from './_components/HistoryForm';
 import { CompanyDocumentForm } from './_components/CompanyDocumentForm';
+import { PaymentForm } from './_components/PaymentForm';
 
 
 const CompanyIdPage = async ({
@@ -33,6 +34,11 @@ const CompanyIdPage = async ({
         },
         include: {
             histories: {
+                orderBy: {
+                    createdAt: "asc"
+                }
+            },
+            finances: {
                 orderBy: {
                     createdAt: "asc"
                 }
@@ -145,10 +151,10 @@ const CompanyIdPage = async ({
                                     Financeiro
                                 </h2>
                             </div>
-                            {/* <PriceForm
+                            <PaymentForm
                                 initialData={company}
                                 companyId={company.id}
-                            /> */}
+                            />
                         </div>
                         {/* <div>
                             <div className='flex items-center gap-x-2'>

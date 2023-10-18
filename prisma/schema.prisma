@@ -122,7 +122,7 @@ model StripeCustomer {
   updatedAt DateTime @updatedAt
 }
 
-// company table section
+// -------------------------- company table section
 
 enum SignatureType {
   MONTHLY
@@ -136,13 +136,22 @@ enum PaymentMethod {
   OTHER
 }
 
+enum SignaturePaymentMethod {
+  CREDIT_CARD
+  PIX
+  BANK_TRANSFER
+  OTHER
+}
+
 model Company {
-  id    String  @id @default(uuid())
-  name  String  @db.Text
-  email String? @db.Text
-  phone String?
+  id             String  @id @default(uuid())
+  name           String  @db.Text
+  email          String? @db.Text
+  phone          String?
+  documentNumber String?
 
   histories History[]
+  finances  Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,20 +159,36 @@ model Company {
   subscriptionDate DateTime?
   subscriptionEnd  DateTime?
 
-  prefPaymentDate DateTime?
-  isActive        Boolean?
-  signatureType   SignatureType?
+  paymentDatePreference DateTime?
+  isActive              Boolean?
+  signatureType         SignatureType?
 
   paymentDate  DateTime?
   isOverdue    Boolean?
   paymentValue Float?
 
-  paymentMethod PaymentMethod?
+  signaturePaymentMethod SignaturePaymentMethod?
 }
 
 model History {
   id    String @id @default(uuid())
   title String
+
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+model Payment {
+  id          String  @id @default(uuid())
+  value       Float
+  discount    Float?
+  netValue    Float?
+  description String? @db.Text
 
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String

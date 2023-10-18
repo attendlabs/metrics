@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Company, History } from '@prisma/client';
+import { Company, Course, Payment } from '@prisma/client';
 
 import {
     Form,
@@ -18,28 +18,25 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
+import { Banknote, CircleDollarSignIcon, File, Loader2, Pencil, PlusCircleIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { setDate } from 'date-fns';
+import { formatPrice } from '@/lib/format';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
-import { Textarea } from '@/components/ui/textarea';
 
 
-
-
-interface HistoryFormProps {
-    initialData: Company & { histories: History[] };
+interface PaymentFormProps {
+    initialData: Company & { finances: Payment[] };
     companyId: string;
 };
 
 const formSchema = z.object({
-    title: z.string().min(1),
+    value: z.coerce.number(),
 });
 
-export const HistoryForm = ({
+export const PaymentForm = ({
     initialData,
     companyId
-}: HistoryFormProps) => {
+}: PaymentFormProps) => {
     const [isCreating, setIsCreating] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -47,13 +44,12 @@ export const HistoryForm = ({
     const toggleCreating = () => {
         setIsCreating((current) => !current);
     };
-
     const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
+            value: undefined,
         },
     });
 
@@ -61,51 +57,47 @@ export const HistoryForm = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.post(`/api/companies/${companyId}/histories`, values);
-            toast.success("Histórico criado");
+            await axios.post(`/api/companies/${companyId}/finances`, values);
+            toast.success("Pagamento adicionado");
             toggleCreating();
             router.refresh();
         } catch (error) {
             toast.error("Aconteceu algo errado");
         }
-    };
-
+    }
 
     const onEdit = (id: string) => {
-        router.push(`/admin/companies/${companyId}/histories/${id}`);
+        router.push(`/admin/companies/${companyId}/finances/${id}`);
     }
 
     const onDelete = async (id: string) => {
         try {
-            await axios.delete(`/api/companies/${companyId}/histories/${id}`);
-            toast.success("Histórico apagado");
+            await axios.delete(`/api/companies/${companyId}/finances/${id}`);
+            toast.success("Pagamento excluído");
             router.refresh();
         } catch (error) {
             toast.error("Aconteceu algo errado")
         }
     }
 
-
+    console.log(initialData, "aqui")
 
     return (
-        <div className='relative mt-6 border bg-slate-100 rounded-md p-4'>
+        <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             {isUpdating && (
                 <div className='absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center'>
                     <Loader2 className='animate-spin h-6 w-6 text-sky-700' />
                 </div>
             )}
             <div className='font-medium flex items-center justify-between'>
-                Observações
+                Últimos pagamentos
                 <Button variant="ghost" onClick={toggleCreating}>
                     {isCreating
-                        ? (
-                            <>Cancelar</>)
-                        : (
-                            <>
-                                <PlusCircle className='h-4 w-4 mr-2' />
-                                Adicionar
-                            </>
-                        )}
+                        ? (<>Cancelar</>)
+                        : (<>
+                            <PlusCircleIcon className='h-4 w-4 mr-2' />
+                            Adicionar
+                        </>)}
                 </Button>
             </div>
             {isCreating && (
@@ -116,13 +108,13 @@ export const HistoryForm = ({
                     >
                         <FormField
                             control={form.control}
-                            name='title'
+                            name='value'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'Introduction'"
+                                            placeholder='2000,00'
                                             {...field}
                                         />
                                     </FormControl>
@@ -132,7 +124,7 @@ export const HistoryForm = ({
                         />
                         <Button
                             disabled={!isValid || isSubmitting}
-                            type="submit"
+                            type='submit'
                         >
                             Salvar
                         </Button>
@@ -142,26 +134,27 @@ export const HistoryForm = ({
             {!isCreating && (
                 <div className={cn(
                     "text-sm mt-2",
-                    !initialData.histories?.length && "text-slate-500 italic"
+                    !initialData.finances?.length && "text-slate-500 italic"
                 )}>
-                    {!initialData.histories?.length && "Sem históricos."}
+                    {!initialData.finances?.length && "Não há pagamentos."}
                     <div className='space-y-2'>
-                        {initialData.histories.map((history) => (
+                        {initialData.finances?.map((payment) => (
                             <div
-                                key={history.id}
+                                key={payment.id}
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
-                                <File className='h-4 w-4 mr-2 flex-shrink-0' />
-                                <p className='text-xs line-clamp-1'>
-                                    {history.title}
+                                <Banknote className='h-4 w-4 mr-2 flex-shrink-0' />
+                                {/* TODO:alterar data para a data do pagamento ao invés da data de criação */}
+                                <p className='text-xs font-medium line-clamp-1'>
+                                    {payment.createdAt.toLocaleDateString()} - Valor: R${payment.value}
                                 </p>
                                 <div className='flex ml-auto'>
                                     <button
                                         className='rounded-full hover:bg-slate-400/20 p-2 transition'
-                                        onClick={() => onEdit(history.id)}>
+                                        onClick={() => onEdit(payment.id)}>
                                         <Pencil className='h-4 w-4' />
                                     </button>
-                                    <ConfirmModal onConfirm={() => onDelete(history.id)}>
+                                    <ConfirmModal onConfirm={() => onDelete(payment.id)}>
                                         <button
                                             className='rounded-full hover:bg-slate-400/20 p-2 transition'
                                         >
@@ -172,13 +165,7 @@ export const HistoryForm = ({
                             </div>
                         ))}
                     </div>
-
                 </div>
-            )}
-            {!isCreating && (
-                <p className='text-xs mt-4 text-muted-foreground'>
-                    Você pode alterar essas observações a qualquer momento.
-                </p>
             )}
         </div>
     )

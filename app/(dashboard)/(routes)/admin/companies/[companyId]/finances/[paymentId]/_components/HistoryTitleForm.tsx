@@ -65,7 +65,7 @@ export const HistoryTitleForm = ({
     }
 
     return (
-        <div className='border bg-slate-100 rounded-md p-4'>
+        <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
                 Observações
                 <Button variant="ghost" onClick={toggleEdit}>
