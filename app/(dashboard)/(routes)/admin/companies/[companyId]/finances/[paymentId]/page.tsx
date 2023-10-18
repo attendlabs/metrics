@@ -5,7 +5,7 @@ import { ArrowLeft, Eye, LayoutDashboard, Video, File } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { HistoryTitleForm } from "./_components/HistoryTitleForm";
-import { HistoryActions, PaymentActions } from "./_components/HistoryActions";
+import { PaymentActions } from "./_components/PaymentActions";
 
 
 const PaymentIdPage = async ({
