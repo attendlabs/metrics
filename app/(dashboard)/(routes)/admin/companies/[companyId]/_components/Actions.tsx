@@ -22,7 +22,7 @@ export const Actions = ({
 }: ActionsProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const confetti = useConfettiStore();
+
 
     const onClick = async () => {
         try {
@@ -34,7 +34,6 @@ export const Actions = ({
             } else {
                 await axios.patch(`/api/companies/${companyId}/activate`);
                 toast.success("Empresa ativada.");
-                confetti.onOpen();
             }
             router.refresh();
         } catch (error) {

@@ -36,12 +36,12 @@ const CompanyIdPage = async ({
         include: {
             histories: {
                 orderBy: {
-                    createdAt: "asc"
+                    createdAt: "desc"
                 }
             },
             finances: {
                 orderBy: {
-                    createdAt: "asc"
+                    paymentDate: "desc"
                 }
             }
         }
@@ -52,22 +52,6 @@ const CompanyIdPage = async ({
     if (!company) {
         redirect("/");
     }
-
-    // const requiredFields = [
-    //     course.title,
-    //     course.description,
-    //     course.imageUrl,
-    //     course.price,
-    //     course.categoryId,
-    //     course.chapters.some(chapter => chapter.isPublished),
-    // ];
-
-    // const totalFields = requiredFields.length;
-    // const completedFields = requiredFields.filter(Boolean).length;
-
-    // const completionText = `(${completedFields}/${totalFields})`;
-
-    // const isComplete = requiredFields.every(Boolean);
 
     return (
         <>
@@ -161,18 +145,6 @@ const CompanyIdPage = async ({
                                 companyId={company.id}
                             />
                         </div>
-                        {/* <div>
-                            <div className='flex items-center gap-x-2'>
-                                <IconBadge icon={File} />
-                                <h2 className='text-xl'>
-                                    Resources & Attachments
-                                </h2>
-                            </div>
-                            <AttachmentForm
-                                initialData={course}
-                                courseId={course.id}
-                            />
-                        </div> */}
                     </div>
                 </div>
             </div>

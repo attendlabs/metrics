@@ -4,9 +4,11 @@ import { auth } from "@clerk/nextjs";
 import { ArrowLeft, Eye, LayoutDashboard, Video, File } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { HistoryTitleForm } from "./_components/HistoryTitleForm";
+import { PaymentDateForm } from "./_components/PaymentDateForm";
 import { PaymentActions } from "./_components/PaymentActions";
-import { PaymentForm } from "../../_components/PaymentForm";
+import { PaymentDescriptionForm } from "./_components/PaymentDescriptionForm";
+import { PaymentValueForm } from "./_components/PaymentValueForm";
+
 
 
 const PaymentIdPage = async ({
@@ -64,15 +66,31 @@ const PaymentIdPage = async ({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <div className="space-y-4">
+                    {/* formatar data */}
                     <div>
-                        Teste
+                        <PaymentDateForm
+                            initialData={payment}
+                            companyId={params.companyId}
+                            paymentId={params.paymentId}
+                        />
                     </div>
-                    {/* Abaixo do primeiro */}
+                    <div>
+                        {/* TODO: consertar valor líquido, cálculo e patch */}
+                        <PaymentValueForm
+                            initialData={payment}
+                            companyId={params.companyId}
+                            paymentId={params.paymentId}
+                        />
+                    </div>
+                    <div>
+                        <PaymentDescriptionForm
+                            initialData={payment}
+                            companyId={params.companyId}
+                            paymentId={params.paymentId}
+                        />
+                    </div>
                 </div>
-                <div className="text-sm text-gray-400 italic">
-                    Teste
-                </div>
-                {/* direito do grid */}
+
             </div>
         </div>
 

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Chapter, History, Payment } from '@prisma/client';
 
 import {
     Form,
@@ -18,28 +19,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pencil } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { Editor } from '@/components/Editor';
+import { Preview } from '@/components/Preview';
 
 
 //todo: translation on form message
 
-interface HistoryTitleFormProps {
-    initialData: {
-        title: string;
-    };
-    companyId: string;
-    historyId: string;
+interface PaymentDescriptionFormProps {
+    initialData: Payment;
+    companyId: string
+    paymentId: string;
 };
 
 const formSchema = z.object({
-    title: z.string().min(1)
+    description: z.string().min(1),
 });
 
-export const HistoryTitleForm = ({
+export const PaymentDescriptionForm = ({
     initialData,
     companyId,
-    historyId
-}: HistoryTitleFormProps) => {
+    paymentId
+}: PaymentDescriptionFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -48,15 +49,17 @@ export const HistoryTitleForm = ({
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            description: initialData?.description || ""
+        },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`/api/companies/${companyId}/histories/${historyId}`, values);
-            toast.success("Histórico alterado");
+            await axios.patch(`/api/companies/${companyId}/finances/${paymentId}`, values);
+            toast.success("Descrição alterada");
             toggleEdit();
             router.refresh();
         } catch (error) {
@@ -67,7 +70,7 @@ export const HistoryTitleForm = ({
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
             <div className='font-medium flex items-center justify-between'>
-                Observações
+                Descrição
                 <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing
                         ? (
@@ -81,9 +84,13 @@ export const HistoryTitleForm = ({
                 </Button>
             </div>
             {!isEditing && (
-                <p className='text-sm mt-2'>
-                    {initialData.title}
-                </p>
+                <div className={cn(
+                    "text-sm mt-2",
+                    !initialData.description && "text-slate-500 italic"
+                )}>
+                    {!initialData.description && "No description"}
+                    {initialData.description}
+                </div>
             )}
             {isEditing && (
                 <Form {...form}>
@@ -93,13 +100,13 @@ export const HistoryTitleForm = ({
                     >
                         <FormField
                             control={form.control}
-                            name='title'
+                            name='description'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'Introduction to the course'"
+                                            placeholder="Ex: Feedback sobre app"
                                             {...field}
                                         />
                                     </FormControl>

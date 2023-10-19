@@ -8,7 +8,7 @@ export async function POST(
 ) {
     try {
         const { userId } = auth();
-        const { value, paymentDate, discount, description } = await req.json();
+        const { value, paymentDate, discount, description, netValue } = await req.json();
 
 
         if (!userId) {
@@ -21,7 +21,7 @@ export async function POST(
                 companyId: params.companyId,
                 paymentDate,
                 discount,
-                netValue: (value - discount),
+                netValue,
                 description
             }
         })

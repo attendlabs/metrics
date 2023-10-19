@@ -50,6 +50,8 @@ export const PaymentForm = ({
 }: PaymentFormProps) => {
     const [isCreating, setIsCreating] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [discounted, setDiscounted] = useState(0);
+
 
 
     const toggleCreating = () => {
@@ -68,8 +70,19 @@ export const PaymentForm = ({
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+
+
+        const model = {
+            value: values.value,
+            companyId: companyId,
+            paymentDate: values.paymentDate,
+            discount: values.discount,
+            netValue: values.netValue,
+            description: values.description
+        }
+
         try {
-            await axios.post(`/api/companies/${companyId}/finances`, values);
+            await axios.post(`/api/companies/${companyId}/finances`, model);
             toast.success("Pagamento adicionado");
             toggleCreating();
             router.refresh();
@@ -93,6 +106,7 @@ export const PaymentForm = ({
     }
 
 
+    console.log(discounted)
 
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
@@ -120,66 +134,12 @@ export const PaymentForm = ({
                     >
                         <FormField
                             control={form.control}
-                            name='value'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Valor bruto
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder='2000,00'
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name='discount'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Desconto
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder='120,00'
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name='netValue'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Valor líquido
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder='1880,00'
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
                             name='paymentDate'
                             render={({ field }) => (
                                 <FormItem className='flex flex-col'>
+                                    <FormLabel>
+                                        Data do pagamento
+                                    </FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -215,11 +175,68 @@ export const PaymentForm = ({
                         />
                         <FormField
                             control={form.control}
+                            name='value'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Valor bruto
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder='2000,00'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='discount'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Desconto
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            disabled={isSubmitting}
+                                            placeholder='120,00'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='netValue'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Valor líquido
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled
+                                            placeholder={'23'}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name='description'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>
-                                        Descrição
+                                        Observação <span className='font-normal text-gray-500'>(opcional)</span>
                                     </FormLabel>
                                     <FormControl>
                                         <Textarea
@@ -254,7 +271,6 @@ export const PaymentForm = ({
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
                                 <Banknote className='h-4 w-4 mr-2 flex-shrink-0' />
-                                {/* TODO:alterar data para a data do pagamento ao invés da data de criação */}
                                 <p className='text-xs font-medium line-clamp-1'>
                                     {payment.paymentDate?.toLocaleDateString() || "Sem data"} - Valor: R${payment.value}
                                 </p>
