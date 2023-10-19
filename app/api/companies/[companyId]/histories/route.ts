@@ -8,7 +8,7 @@ export async function POST(
 ) {
     try {
         const { userId } = auth();
-        const { title } = await req.json();
+        const { title, description, historyDate } = await req.json();
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -19,6 +19,8 @@ export async function POST(
             data: {
                 title,
                 companyId: params.companyId,
+                description,
+                historyDate
             }
         });
 

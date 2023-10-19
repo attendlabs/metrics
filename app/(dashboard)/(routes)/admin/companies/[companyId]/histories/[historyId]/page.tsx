@@ -6,6 +6,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { HistoryTitleForm } from "./_components/HistoryTitleForm";
 import { HistoryActions } from "./_components/HistoryActions";
+import { HistoryDescriptionForm } from "./_components/HistoryDescriptionForm";
+import { HistoryAttachmentForm } from "./_components/HistoryAttachmentForm";
+import { HistoryDateForm } from "./_components/HistoryDateForm";
 
 
 const CompanyIdPage = async ({
@@ -23,6 +26,13 @@ const CompanyIdPage = async ({
         where: {
             id: params.historyId,
             companyId: params.companyId
+        },
+        include: {
+            attachments: {
+                orderBy: {
+                    createdAt: "asc"
+                }
+            }
         }
     });
 
@@ -69,18 +79,29 @@ const CompanyIdPage = async ({
                             companyId={params.companyId}
                             historyId={params.historyId}
                         />
-                        {/* <ChapterDescriptionForm
-                                initialData={chapter}
-                                courseId={params.courseId}
-                                CompanyId={params.CompanyId}
-                            /> */}
+                        <HistoryDescriptionForm
+                            initialData={history}
+                            companyId={params.companyId}
+                            historyId={params.historyId}
+                        />
+                        <HistoryDateForm
+                            initialData={history}
+                            historyId={params.historyId}
+                            companyId={params.companyId}
+                        />
                     </div>
                     {/* Abaixo do primeiro */}
                 </div>
-                <div className="text-sm text-gray-400 italic">
-                    TO-DO: add file attachments, bigger description and other important infos
+                <div>
+                    {/* direito do grid */}
+                    <div>
+                        <HistoryAttachmentForm
+                            initialData={history}
+                            historyId={params.historyId}
+                            companyId={params.companyId}
+                        />
+                    </div>
                 </div>
-                {/* direito do grid */}
             </div>
         </div>
 

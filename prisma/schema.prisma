@@ -173,8 +173,12 @@ model Company {
 }
 
 model History {
-  id    String @id @default(uuid())
-  title String
+  id          String   @id @default(uuid())
+  title       String
+  historyDate DateTime
+  description String?
+
+  attachments historyAttachment[]
 
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String
@@ -200,4 +204,18 @@ model Payment {
   updatedAt DateTime @updatedAt
 
   @@index([companyId])
+}
+
+model historyAttachment {
+  id   String @id @default(uuid())
+  name String
+  url  String @db.Text
+
+  historyId String
+  history   History @relation(fields: [historyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([historyId])
 }

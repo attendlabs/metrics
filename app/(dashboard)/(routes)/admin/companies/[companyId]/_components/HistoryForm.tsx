@@ -14,15 +14,18 @@ import {
     FormControl,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
+import { CalendarIcon, File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { setDate } from 'date-fns';
+import { format, setDate } from 'date-fns';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Textarea } from '@/components/ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 
 
 
@@ -34,6 +37,10 @@ interface HistoryFormProps {
 
 const formSchema = z.object({
     title: z.string().min(1),
+    description: z.string().min(1).optional(),
+    historyDate: z.date({
+        required_error: "Selecione a data.",
+    }),
 });
 
 export const HistoryForm = ({
@@ -54,6 +61,7 @@ export const HistoryForm = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
+            historyDate: new Date()
         },
     });
 
@@ -119,13 +127,76 @@ export const HistoryForm = ({
                             name='title'
                             render={({ field }) => (
                                 <FormItem>
+                                    <FormLabel>
+                                        Título
+                                    </FormLabel>
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'Introduction'"
+                                            placeholder="Ex: Feedback do cliente sobre App"
                                             {...field}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='description'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Descrição
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            disabled={isSubmitting}
+                                            placeholder="Ex: o cliente não conseguiu usar o app"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='historyDate'
+                            render={({ field }) => (
+                                <FormItem className='flex flex-col'>
+                                    <FormLabel>
+                                        Data da ocorrência
+                                    </FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-[240px] pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value ? (
+                                                        format(field.value, "PP")
+                                                    ) : (
+                                                        <span>Escolha uma data</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className='w-auto p-0' align='start'>
+                                            <Calendar
+                                                mode='single'
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -152,8 +223,11 @@ export const HistoryForm = ({
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
                                 <File className='h-4 w-4 mr-2 flex-shrink-0' />
+                                <p className='text-xs mr-2 font-semibold'>
+                                    {history.historyDate.toLocaleDateString()}
+                                </p>
                                 <p className='text-xs line-clamp-1'>
-                                    {history.title}
+                                    -  {history.title}
                                 </p>
                                 <div className='flex ml-auto'>
                                     <button
