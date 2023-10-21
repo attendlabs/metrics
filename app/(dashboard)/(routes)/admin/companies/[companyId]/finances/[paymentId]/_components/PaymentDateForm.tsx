@@ -94,7 +94,7 @@ export const PaymentDateForm = ({
                             "text-sm font-medium text-slate-700",
                             !initialData.paymentDate && "text-slate-500 italic"
                         )}>
-                            {initialData.paymentDate?.toLocaleDateString() || "Insira uma data"}
+                            {format(initialData.paymentDate, "dd/MM/yyyy") || "Insira uma data"}
                         </p>
                     </div>
                 </>

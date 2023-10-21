@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { CalendarIcon, File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format, setDate } from 'date-fns';
+import { format } from 'date-fns';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -217,14 +217,14 @@ export const HistoryForm = ({
                 )}>
                     {!initialData.histories?.length && "Sem históricos."}
                     <div className='space-y-2'>
-                        {initialData.histories.map((history) => (
+                        {initialData.histories.slice(0, 3).map((history) => (
                             <div
                                 key={history.id}
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
                                 <File className='h-4 w-4 mr-2 flex-shrink-0' />
                                 <p className='text-xs mr-2 font-semibold'>
-                                    {history.historyDate.toLocaleDateString()}
+                                    {format(history.historyDate, "dd/MM/yyyy")}
                                 </p>
                                 <p className='text-xs line-clamp-1'>
                                     -  {history.title}

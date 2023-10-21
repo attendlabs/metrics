@@ -3,8 +3,8 @@
 import * as z from 'zod';
 import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useForm, SetFieldValue } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Company, Payment } from '@prisma/client';
@@ -38,7 +38,7 @@ const formSchema = z.object({
     value: z.coerce.number(),
     discount: z.coerce.number().optional(),
     netValue: z.coerce.number().optional(),
-    description: z.string().min(4, "Mínimo de 4 caracteres").optional(),
+    description: z.string().min(1).optional(),
     paymentDate: z.date({
         required_error: "Selecione a data do pagamento.",
     }),
@@ -50,7 +50,7 @@ export const PaymentForm = ({
 }: PaymentFormProps) => {
     const [isCreating, setIsCreating] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [discounted, setDiscounted] = useState(0);
+    const [netValue, setNetValue] = useState(0);
 
 
 
@@ -69,6 +69,8 @@ export const PaymentForm = ({
 
     const { isSubmitting, isValid } = form.formState;
 
+
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
 
@@ -77,7 +79,7 @@ export const PaymentForm = ({
             companyId: companyId,
             paymentDate: values.paymentDate,
             discount: values.discount,
-            netValue: values.netValue,
+            netValue: netValue,
             description: values.description
         }
 
@@ -90,6 +92,8 @@ export const PaymentForm = ({
             toast.error("Aconteceu algo errado");
         }
     }
+
+
 
     const onEdit = (id: string) => {
         router.push(`/admin/companies/${companyId}/finances/${id}`);
@@ -104,9 +108,16 @@ export const PaymentForm = ({
             toast.error("Aconteceu algo errado")
         }
     }
+    const watchValues = form.watch();
+
+    useEffect(() => {
+        const value = watchValues.value;
+        const discount = watchValues.discount || 0;
+        const netValue = value - discount;
+        return setNetValue(netValue);
+    }, [watchValues])
 
 
-    console.log(discounted)
 
     return (
         <div className='mt-6 border bg-slate-100 rounded-md p-4'>
@@ -127,7 +138,7 @@ export const PaymentForm = ({
                 </Button>
             </div>
             {isCreating && (
-                <Form {...form}>
+                <Form {...form} watch={form.watch}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
                         className='space-y-4 mt-4'
@@ -183,8 +194,10 @@ export const PaymentForm = ({
                                     </FormLabel>
                                     <FormControl>
                                         <Input
+                                            type="number"
+                                            step="0.01"
                                             disabled={isSubmitting}
-                                            placeholder='2000,00'
+                                            placeholder='Valor bruto separando centavos por vírgula'
                                             {...field}
                                         />
                                     </FormControl>
@@ -204,8 +217,9 @@ export const PaymentForm = ({
                                         <Input
                                             type="number"
                                             step="0.01"
+                                            inputMode='numeric'
                                             disabled={isSubmitting}
-                                            placeholder='120,00'
+                                            placeholder='Valor do desconto separando centavos por vírgula'
                                             {...field}
                                         />
                                     </FormControl>
@@ -223,8 +237,7 @@ export const PaymentForm = ({
                                     <FormControl>
                                         <Input
                                             disabled
-                                            placeholder={'23'}
-                                            {...field}
+                                            value={formatPrice(netValue)}
                                         />
                                     </FormControl>
                                 </FormItem>
@@ -265,14 +278,14 @@ export const PaymentForm = ({
                 )}>
                     {!initialData.finances?.length && "Não há pagamentos."}
                     <div className='space-y-2'>
-                        {initialData.finances?.map((payment) => (
+                        {initialData.finances?.slice(0, 3).map((payment) => (
                             <div
                                 key={payment.id}
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
                                 <Banknote className='h-4 w-4 mr-2 flex-shrink-0' />
                                 <p className='text-xs font-medium line-clamp-1'>
-                                    {payment.paymentDate?.toLocaleDateString() || "Sem data"} - Valor: R${payment.value}
+                                    {format(payment.paymentDate, "dd/MM/yyyy") || "Sem data"} - Valor: {formatPrice(payment.value)}
                                 </p>
                                 <div className='flex ml-auto'>
                                     <button

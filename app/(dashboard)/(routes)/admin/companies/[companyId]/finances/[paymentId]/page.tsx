@@ -75,7 +75,6 @@ const PaymentIdPage = async ({
                         />
                     </div>
                     <div>
-                        {/* TODO: consertar valor líquido, cálculo e patch */}
                         <PaymentValueForm
                             initialData={payment}
                             companyId={params.companyId}

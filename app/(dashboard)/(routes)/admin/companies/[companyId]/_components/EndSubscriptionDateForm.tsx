@@ -92,7 +92,7 @@ export const EndSubscriptionDateForm = ({
                             "text-sm font-medium text-slate-700",
                             !initialData.subscriptionEnd && "text-slate-500 font-normal italic"
                         )}>
-                            {initialData.subscriptionEnd?.toLocaleDateString() || "Insira uma data"}
+                            {initialData.subscriptionEnd && format(initialData.subscriptionEnd, "dd/MM/yyyy") || "Insira uma data"}
                         </p>
                     </div>
                 </>

@@ -4,7 +4,7 @@ import * as z from 'zod';
 import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Chapter, History, Payment } from '@prisma/client';
@@ -23,6 +23,7 @@ import { Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Editor } from '@/components/Editor';
 import { Preview } from '@/components/Preview';
+import { formatPrice } from '@/lib/format';
 
 
 //TODO: consertar valor liquido, calculo e patch
@@ -35,8 +36,8 @@ interface PaymentValueFormProps {
 
 const formSchema = z.object({
     value: z.coerce.number(),
-    discount: z.coerce.number().optional(),
-    netValue: z.coerce.number().optional(),
+    discount: z.coerce.number(),
+    netValue: z.coerce.number(),
 });
 
 export const PaymentValueForm = ({
@@ -45,6 +46,7 @@ export const PaymentValueForm = ({
     paymentId
 }: PaymentValueFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [netValue, setNetValue] = useState(0);
 
     const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -60,8 +62,15 @@ export const PaymentValueForm = ({
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+
+        const model = {
+            value: values.value,
+            discount: values.discount,
+            netValue: netValue,
+        }
+
         try {
-            await axios.patch(`/api/companies/${companyId}/finances/${paymentId}`, values);
+            await axios.patch(`/api/companies/${companyId}/finances/${paymentId}`, model);
             toast.success("Valor total alterado");
             toggleEdit();
             router.refresh();
@@ -69,6 +78,15 @@ export const PaymentValueForm = ({
             toast.error("Aconteceu algo errado");
         }
     }
+
+    const watchValues = form.watch();
+
+    useEffect(() => {
+        const value = watchValues.value;
+        const discount = watchValues.discount || 0;
+        const netValue = value - discount;
+        return setNetValue(netValue);
+    }, [watchValues])
 
     return (
         <div className='border bg-slate-100 rounded-md p-4'>
@@ -96,7 +114,7 @@ export const PaymentValueForm = ({
                         !initialData.value && "text-slate-500 italic"
                     )}>
                         {!initialData.value && "No description"}
-                        R${initialData.value}
+                        {formatPrice(initialData.value)}
                     </div>
                     <div className='font-medium flex items-center justify-between'>
                         Desconto
@@ -105,7 +123,7 @@ export const PaymentValueForm = ({
                         "text-sm",
                         !initialData.discount && "text-slate-500 italic"
                     )}>
-                        R${initialData.discount || "0,00"}
+                        {initialData.discount && formatPrice(initialData.discount) || "R$ 0,00"}
                     </div>
                     <div className='font-medium flex items-center justify-between'>
                         Valor líquido
@@ -114,7 +132,7 @@ export const PaymentValueForm = ({
                         "text-sm",
                         !initialData.netValue && "text-slate-500 italic"
                     )}>
-                        R${initialData.netValue}
+                        {initialData.netValue && formatPrice(initialData.netValue)}
                     </div>
                 </div>
             )}
@@ -135,8 +153,10 @@ export const PaymentValueForm = ({
                                 <FormItem>
                                     <FormControl>
                                         <Input
+                                            type="number"
+                                            step="0.01"
                                             disabled={isSubmitting}
-                                            placeholder='2000,00'
+                                            placeholder='R$ 2000,00'
                                             {...field}
                                         />
                                     </FormControl>
@@ -175,8 +195,7 @@ export const PaymentValueForm = ({
                                     <FormControl>
                                         <Input
                                             disabled
-                                            placeholder={`R$ ${initialData.netValue?.toString() || "0,00"}`}
-                                            {...field}
+                                            value={formatPrice(netValue)}
                                         />
                                     </FormControl>
                                 </FormItem>

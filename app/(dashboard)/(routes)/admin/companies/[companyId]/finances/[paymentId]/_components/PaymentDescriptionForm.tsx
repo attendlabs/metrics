@@ -88,8 +88,7 @@ export const PaymentDescriptionForm = ({
                     "text-sm mt-2",
                     !initialData.description && "text-slate-500 italic"
                 )}>
-                    {!initialData.description && "No description"}
-                    {initialData.description}
+                    {initialData.description ? initialData.description : "Sem descrição"}
                 </div>
             )}
             {isEditing && (
