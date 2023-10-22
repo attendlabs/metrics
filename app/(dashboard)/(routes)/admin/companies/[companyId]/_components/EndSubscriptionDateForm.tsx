@@ -67,13 +67,21 @@ export const EndSubscriptionDateForm = ({
         }
     }
 
+    const isMonthly = initialData.signatureType === "MONTHLY";
+
 
 
     return (
-        <div className='mt-6 border bg-slate-100 rounded-md p-4'>
-            <div className='font-medium flex items-center justify-between'>
+        <div className={cn(
+            'mt-6 border bg-slate-100 rounded-md p-4',
+            isMonthly && "opacity-60"
+        )}>
+            <div className={cn(
+                "font-medium flex items-center justify-between",
+                isMonthly && "text-slate-500 font-normal"
+            )}>
                 Fim da assinatura
-                <Button variant="ghost" onClick={toggleEdit}>
+                <Button variant="ghost" onClick={toggleEdit} disabled={isMonthly}>
                     {isEditing
                         ? (
                             <>Cancelar</>)
@@ -90,7 +98,8 @@ export const EndSubscriptionDateForm = ({
                     <div className='flex items-center gap-x-2'>
                         <p className={cn(
                             "text-sm font-medium text-slate-700",
-                            !initialData.subscriptionEnd && "text-slate-500 font-normal italic"
+                            !initialData.subscriptionEnd && "text-slate-500 font-normal italic",
+                            isMonthly && "text-slate-500 font-normal italic"
                         )}>
                             {initialData.subscriptionEnd && format(initialData.subscriptionEnd, "dd/MM/yyyy") || "Insira uma data"}
                         </p>
@@ -104,6 +113,7 @@ export const EndSubscriptionDateForm = ({
                         className='space-y-4 mt-4'
                     >
                         <FormField
+                            disabled={isMonthly}
                             control={form.control}
                             name='subscriptionEnd'
                             render={({ field }) => (
