@@ -33,7 +33,7 @@ interface CompanyEmailFormProps {
 const formSchema = z.object({
     email: z.string().min(1, {
         message: "O e-mail é obrigatório.",
-    }),
+    }).email({ message: "Use um e-mail válido" }),
 });
 
 export const CompanyEmailForm = ({
@@ -50,7 +50,7 @@ export const CompanyEmailForm = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: initialData?.email || ""
-        },
+        }, criteriaMode: 'firstError'
     });
 
     const { isSubmitting, isValid } = form.formState;

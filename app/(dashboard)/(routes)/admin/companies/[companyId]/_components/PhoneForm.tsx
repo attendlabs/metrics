@@ -8,6 +8,8 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Company, Course } from '@prisma/client';
+import IMask from 'imask';
+import { IMaskInput } from 'react-imask';
 
 import {
     Form,
@@ -23,15 +25,13 @@ import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 
 
-//todo: translation on form message
-
 interface PhoneFormProps {
     initialData: Company;
     companyId: string;
 };
 
 const formSchema = z.object({
-    phone: z.string().min(1, {
+    phone: z.string().min(14, {
         message: "O número de telefone é obrigatório.",
     }),
 });
@@ -42,9 +42,21 @@ export const PhoneForm = ({
 }: PhoneFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
+    const cel = IMask.createMask({
+        mask: "(00) 00000-0000"
+    })
     const toggleEdit = () => setIsEditing((current) => !current);
 
     const router = useRouter();
+
+    const maskOptions = [{
+        mask: "(00) 0000-0000"
+    },
+    {
+        mask: "(00) 00000-0000"
+    }];
+
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -58,7 +70,7 @@ export const PhoneForm = ({
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.patch(`/api/companies/${companyId}`, values);
-            toast.success("Empresa atualizada!");
+            toast.success("Telefone atualizad!");
             toggleEdit();
             router.refresh();
         } catch (error) {
@@ -102,10 +114,12 @@ export const PhoneForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input
-                                            type='tel'
+                                        <IMaskInput
+                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                            mask={maskOptions}
+                                            type='text'
                                             disabled={isSubmitting}
-                                            placeholder="(35)3524-1234"
+                                            placeholder="(35) 3524-1234"
                                             {...field}
                                         />
                                     </FormControl>
