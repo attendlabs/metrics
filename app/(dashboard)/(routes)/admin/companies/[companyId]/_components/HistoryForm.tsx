@@ -157,6 +157,9 @@ export const HistoryForm = ({
                                         />
                                     </FormControl>
                                     <FormMessage />
+                                    <p className='text-xs mt-4 text-muted-foreground'>
+                                        Você poderá adicionar arquivos anexos após criar a ocorrência.
+                                    </p>
                                 </FormItem>
                             )}
                         />
@@ -222,7 +225,10 @@ export const HistoryForm = ({
                                 key={history.id}
                                 className='flex items-center px-2 py-1 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
                             >
-                                <File className='h-4 w-4 mr-2 flex-shrink-0' />
+                                <div className='flex'>
+                                    <File className='h-4 w-4 mr-2 flex-shrink-0' />
+                                    <p>{initialData.histories.length && initialData.histories.length}</p>
+                                </div>
                                 <p className='text-xs mr-2 font-semibold'>
                                     {format(history.historyDate, "dd/MM/yyyy")}
                                 </p>

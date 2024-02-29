@@ -16,6 +16,8 @@ import { HistoryForm } from './_components/HistoryForm';
 import { CompanyDocumentForm } from './_components/CompanyDocumentForm';
 import { PaymentForm } from './_components/PaymentForm';
 import { DatabaseIdForm } from './_components/DatabaseIdForm';
+import { Button } from '@/components/ui/button';
+import { CancelSubscriptionForm } from './_components/CancelSubscriptionForm';
 
 
 const CompanyIdPage = async ({
@@ -140,6 +142,11 @@ const CompanyIdPage = async ({
                                 Assinatura
                             </h2>
                         </div>
+
+                        <CancelSubscriptionForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
 
                         <SignatureTypeForm
                             initialData={company}

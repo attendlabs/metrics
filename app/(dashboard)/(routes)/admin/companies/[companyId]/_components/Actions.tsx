@@ -60,9 +60,6 @@ export const Actions = ({
         }
     }
 
-    const onCancelSubscription = async (params) => {
-        console.log(params, "CANCELSUBSCRIPTION");
-    }
 
 
     return (
@@ -75,11 +72,6 @@ export const Actions = ({
             >
                 {isActive ? "Inativar" : "Ativar"}
             </Button>
-            <CancelingModal onConfirm={onCancelSubscription} >
-                <Button size="sm" variant="destructive">
-                    Cancelar assinatura
-                </Button>
-            </CancelingModal>
             <ConfirmModal onConfirm={onDelete}>
                 <Button size="sm">
                     <Trash className="h-4 w-4" />

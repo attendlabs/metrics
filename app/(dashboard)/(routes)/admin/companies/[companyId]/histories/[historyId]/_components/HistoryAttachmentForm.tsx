@@ -137,7 +137,7 @@ export const HistoryAttachmentForm = ({
                         }}
                     />
                     <div className='text-xs text-muted-foreground mt-4'>
-                        Add anything your students might need to complete the course.
+                        Adicione qualquer arquivo que for pertinente à ocorrência.
                     </div>
                 </div>
             )}
