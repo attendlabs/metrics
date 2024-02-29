@@ -136,7 +136,14 @@ export const EndSubscriptionDateForm = ({
                                                 mode='single'
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date(initialData.subscriptionDate) || date < new Date("1900-01-01")}
+                                                disabled={(date) => {
+                                                    if (!initialData.subscriptionDate) {
+                                                        return (date < new Date("1900-01-01"))
+                                                    }
+                                                    return (
+                                                        date < initialData.subscriptionDate
+                                                    )
+                                                }}
                                                 initialFocus
                                             />
                                         </PopoverContent>

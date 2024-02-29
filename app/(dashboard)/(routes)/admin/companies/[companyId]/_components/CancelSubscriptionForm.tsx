@@ -116,6 +116,7 @@ export const CancelSubscriptionForm = ({
                                             <FormControl>
                                                 <Button
                                                     variant={"outline"}
+                                                    disabled={!initialData.subscriptionDate}
                                                     className={cn(
                                                         "w-[240px] pl-3 text-left font-normal",
                                                         !field.value && "text-muted-foreground"
@@ -135,7 +136,14 @@ export const CancelSubscriptionForm = ({
                                                 mode='single'
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < initialData.subscriptionDate || date < new Date("1900-01-01")}
+                                                disabled={(date) => {
+                                                    if (!initialData.subscriptionDate) {
+                                                        return (date < new Date("1900-01-01"))
+                                                    }
+                                                    return (
+                                                        date < initialData.subscriptionDate
+                                                    )
+                                                }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
