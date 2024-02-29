@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { IconBadge } from '@/components/IconBadge';
-import { CircleDollarSign, File, LayoutDashboard, ListChecks } from 'lucide-react';
+import { CircleDollarSign, File, LayoutDashboard, ListChecks, CalendarCheck2 } from 'lucide-react';
 import { CompanyNameForm } from './_components/CompanyNameForm';
 import { CompanyEmailForm } from './_components/CompanyEmailForm';
 import { InitialSubscriptionDateForm } from './_components/InitialSubscriptionDateForm';
@@ -102,19 +102,6 @@ const CompanyIdPage = async ({
                             companyId={company.id}
                         />
 
-                        <SignatureTypeForm
-                            initialData={company}
-                            companyId={company.id}
-                        />
-                        {/* to-do: formatar datas para dd/mm/aaaa */}
-                        <InitialSubscriptionDateForm
-                            initialData={company}
-                            companyId={company.id}
-                        />
-                        <EndSubscriptionDateForm
-                            initialData={company}
-                            companyId={company.id}
-                        />
                     </div>
                     <div className='space-y-6'>
                         <div>
@@ -145,6 +132,28 @@ const CompanyIdPage = async ({
                                 companyId={company.id}
                             />
                         </div>
+                    </div>
+                    <div>
+                        <div className='flex items-center gap-x-2' id="#signature">
+                            <IconBadge icon={CalendarCheck2} />
+                            <h2 className='text-xl'>
+                                Assinatura
+                            </h2>
+                        </div>
+
+                        <SignatureTypeForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+
+                        <InitialSubscriptionDateForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
+                        <EndSubscriptionDateForm
+                            initialData={company}
+                            companyId={company.id}
+                        />
                     </div>
                 </div>
             </div>

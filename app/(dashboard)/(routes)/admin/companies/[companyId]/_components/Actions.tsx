@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { CancelingModal } from "../_components/CancelingModal";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Trash } from "lucide-react";
@@ -59,6 +60,11 @@ export const Actions = ({
         }
     }
 
+    const onCancelSubscription = async (params) => {
+        console.log(params, "CANCELSUBSCRIPTION");
+    }
+
+
     return (
         <div className="flex items-center gap-x-2">
             <Button
@@ -69,6 +75,11 @@ export const Actions = ({
             >
                 {isActive ? "Inativar" : "Ativar"}
             </Button>
+            <CancelingModal onConfirm={onCancelSubscription} >
+                <Button size="sm" variant="destructive">
+                    Cancelar assinatura
+                </Button>
+            </CancelingModal>
             <ConfirmModal onConfirm={onDelete}>
                 <Button size="sm">
                     <Trash className="h-4 w-4" />

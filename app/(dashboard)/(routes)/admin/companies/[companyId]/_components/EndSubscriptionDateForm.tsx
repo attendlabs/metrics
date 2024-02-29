@@ -36,7 +36,7 @@ interface EndSubscriptionDateFormProps {
 
 const formSchema = z.object({
     subscriptionEnd: z.date({
-        required_error: "Selecione uma data de início.",
+        required_error: "Selecione uma data válida.",
     }),
 });
 
@@ -67,21 +67,17 @@ export const EndSubscriptionDateForm = ({
         }
     }
 
-    const isMonthly = initialData.signatureType === "MONTHLY";
-
 
 
     return (
         <div className={cn(
-            'mt-6 border bg-slate-100 rounded-md p-4',
-            isMonthly && "opacity-60"
+            'mt-6 border bg-slate-100 rounded-md p-4'
         )}>
             <div className={cn(
-                "font-medium flex items-center justify-between",
-                isMonthly && "text-slate-500 font-normal"
+                "font-medium flex items-center justify-between"
             )}>
                 Fim da assinatura
-                <Button variant="ghost" onClick={toggleEdit} disabled={isMonthly}>
+                <Button variant="ghost" onClick={toggleEdit}>
                     {isEditing
                         ? (
                             <>Cancelar</>)
@@ -98,8 +94,7 @@ export const EndSubscriptionDateForm = ({
                     <div className='flex items-center gap-x-2'>
                         <p className={cn(
                             "text-sm font-medium text-slate-700",
-                            !initialData.subscriptionEnd && "text-slate-500 font-normal italic",
-                            isMonthly && "text-slate-500 font-normal italic"
+                            !initialData.subscriptionEnd && "text-slate-500 font-normal italic"
                         )}>
                             {initialData.subscriptionEnd && format(initialData.subscriptionEnd, "dd/MM/yyyy") || "Insira uma data"}
                         </p>
@@ -113,7 +108,6 @@ export const EndSubscriptionDateForm = ({
                         className='space-y-4 mt-4'
                     >
                         <FormField
-                            disabled={isMonthly}
                             control={form.control}
                             name='subscriptionEnd'
                             render={({ field }) => (
@@ -142,7 +136,7 @@ export const EndSubscriptionDateForm = ({
                                                 mode='single'
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                                                disabled={(date) => date < new Date(initialData.subscriptionDate) || date < new Date("1900-01-01")}
                                                 initialFocus
                                             />
                                         </PopoverContent>
